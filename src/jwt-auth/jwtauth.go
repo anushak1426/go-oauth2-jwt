@@ -1,13 +1,10 @@
 package main
 
 import (
-	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -28,7 +25,7 @@ var client *redis.Client = redis.NewClient(&redis.Options{
 func main() {
 	prop = LoadConfig()
 	r.POST("/token", Token)
-	r.POST("/authenticate", Authenticate)
+	r.POST("/authenticate", Authorize(), Authenticate)
 	log.Fatal(r.Run(":9090"))
 }
 
@@ -56,7 +53,7 @@ func Token(c *gin.Context) {
 	tokens := map[string]string{
 		"access_token": ts.AccessToken,
 	}
-	c.JSON(http.StatusOK, tokens)
+	c.JSON(http.StatusCreated, tokens)
 }
 
 //GenerateToken function generates the token based on the access_secret and the userdata
@@ -117,76 +114,15 @@ func Authenticate(c *gin.Context) {
 	c.JSON(http.StatusCreated, td)
 }
 
-//ExtractTokenMetadata function from the request and cache
-func ExtractTokenMetadata(r *http.Request) (*AccessDetails, error) {
-	token, err := VerifyToken(r)
-	if err != nil {
-		return nil, err
-	}
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if ok && token.Valid {
-		accessUUID, ok := claims["access_uuid"].(string)
-		if !ok {
-			return nil, err
-		}
-		userID, err := strconv.ParseUint(fmt.Sprintf("%.f", claims["user_id"]), 10, 64)
+//Authorize function provides the secure access to the API's
+func Authorize() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		err := TokenValid(c.Request)
 		if err != nil {
-			return nil, err
+			c.JSON(http.StatusUnauthorized, err.Error())
+			c.Abort()
+			return
 		}
-		return &AccessDetails{
-			AccessUUID: accessUUID,
-			UserID:     int64(userID),
-		}, nil
+		c.Next()
 	}
-	return nil, err
-}
-
-//AuthUserID function validates the id used while generating the token and the one passed while invoking the API
-func AuthUserID(authD *AccessDetails) (int64, error) {
-	userid, err := client.Get(authD.AccessUUID).Result()
-	if err != nil {
-		return 0, err
-	}
-	userID, _ := strconv.ParseUint(userid, 10, 64)
-	if uint64(authD.UserID) != userID {
-		return 0, errors.New("unauthorized")
-	}
-	return int64(userID), nil
-}
-
-//ExtractToken function extracts the token passed in the request header
-func ExtractToken(r *http.Request) string {
-	bearToken := r.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
-	}
-	return ""
-}
-
-// VerifyToken function Parse, validate, and return a token.keyFunc will receive the parsed token and should return the key for validating.
-func VerifyToken(r *http.Request) (*jwt.Token, error) {
-	tokenString := ExtractToken(r)
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(os.Getenv(accessSecret)), nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return token, nil
-}
-
-//TokenValid function verifies the token
-func TokenValid(r *http.Request) error {
-	token, err := VerifyToken(r)
-	if err != nil {
-		return err
-	}
-	if _, ok := token.Claims.(jwt.Claims); !ok || !token.Valid {
-		return err
-	}
-	return nil
 }
