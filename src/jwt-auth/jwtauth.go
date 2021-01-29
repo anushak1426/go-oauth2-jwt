@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -17,8 +16,7 @@ import (
 	"github.com/twinj/uuid"
 )
 
-var router = gin.Default()
-var ctx = context.TODO()
+var r = gin.Default()
 var prop map[string]string
 
 var client *redis.Client = redis.NewClient(&redis.Options{
@@ -29,9 +27,9 @@ var client *redis.Client = redis.NewClient(&redis.Options{
 
 func main() {
 	prop = LoadConfig()
-	router.POST("/token", Token)
-	router.POST("/authenticate", Authenticate)
-	log.Fatal(router.Run(":9090"))
+	r.POST("/token", Token)
+	r.POST("/authenticate", Authenticate)
+	log.Fatal(r.Run(":9090"))
 }
 
 //Token function
