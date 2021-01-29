@@ -29,13 +29,13 @@ var client *redis.Client = redis.NewClient(&redis.Options{
 
 func main() {
 	prop = LoadConfig()
-	router.POST("/login", Login)
+	router.POST("/token", Token)
 	router.POST("/authenticate", Authenticate)
 	log.Fatal(router.Run(":9090"))
 }
 
-//Login function
-func Login(c *gin.Context) {
+//Token function
+func Token(c *gin.Context) {
 	var u User
 	if err := c.ShouldBindJSON(&u); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
