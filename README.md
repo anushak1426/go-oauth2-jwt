@@ -8,14 +8,28 @@ This tutorial illustrates the following
 
 **Prerequisites:**
 1.  GOROOT and GOPATH should be set properly to refer the packages/dependencies
-2.  Redis server 3.0 
+2.  Redis server 3.0 up and running
 
 **OAuth2**
+1.  Open Git Bash ; navigate to the folder ../src/oauth2 & list the files , look for oauth2.go
+2.  run oauth2.go as standalone file i.e *"go run oauth2.go"*
+3.  server is up and running on port 9096 ; can verify the API's >/credentials , >/token and >/authenticate
+4.  Run the client program under package client  i.e *"go run client.go"*
+5.  Verify the results now
+
+***Run the below command which inturns generate client ID and Secret , issues and validates the token***
+> curl --location --request POST 'http://localhost:9090/'
+
+[output:]
+
+{
+    "Status": "Success"
+}
 
 
 **JWT**
 1.  Download the src from git 
-2.  Build the files under package jwt-auth using "go build -o jwt-auth.exe *.go"
+2.  Build the files under package jwt-auth using *"go build -o jwt-auth.exe *.go"*
 3.  Run the exe jwt-auth.exe 
 4.  Verify the results now
 
@@ -28,7 +42,7 @@ This tutorial illustrates the following
     "password": "test"
 }'
 
-output :
+[output] :
 {
     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImUyMzEyMTBmLWQyNWItNGYzYy05YzZhLWM0NzU4NDhhN2Q5MiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYxMTg4NzQ3OCwidXNlcl9pZCI6MzAyfQ.Z98RKXr1bl0UwXGtmFufirimQtXDTMf0TCWRIcyy4Xk"
 }
@@ -44,7 +58,7 @@ output :
     "title":"student"
 }'
 
-output:
+[output:]
 {
     "user_id": 302,
     "title": "student",
