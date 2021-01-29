@@ -18,3 +18,35 @@ JWT
 2.Build the files under package jwt-auth using "go build -o jwt-auth.exe *.go"
 3.Run the exe jwt-auth.exe 
 4.Verify the results now
+
+Get the access token using below curl command 
+curl --location --request POST 'http://localhost:9090/token' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "id":302,
+    "username": "admin",
+    "password": "test"
+}'
+
+output :
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImUyMzEyMTBmLWQyNWItNGYzYy05YzZhLWM0NzU4NDhhN2Q5MiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYxMTg4NzQ3OCwidXNlcl9pZCI6MzAyfQ.Z98RKXr1bl0UwXGtmFufirimQtXDTMf0TCWRIcyy4Xk"
+}
+
+Note : the expiry of this token is 5 Min , afterwards will be automatically flushed from cache
+
+Pass the access_token from the client program using below curl command(i.e /authenticate) 
+curl --location --request POST 'http://localhost:9090/authenticate' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImUyMzEyMTBmLWQyNWItNGYzYy05YzZhLWM0NzU4NDhhN2Q5MiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYxMTg4NzQ3OCwidXNlcl9pZCI6MzAyfQ.Z98RKXr1bl0UwXGtmFufirimQtXDTMf0TCWRIcyy4Xk' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "user_id":302,
+    "title":"student"
+}'
+
+output:
+{
+    "user_id": 302,
+    "title": "student",
+    "status": "success"
+}
