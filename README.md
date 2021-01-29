@@ -13,18 +13,17 @@ This tutorial illustrates the following
 **OAuth2**
 1.  Open Git Bash ; navigate to the folder ../src/oauth2 & list the files , look for oauth2.go
 2.  run oauth2.go as standalone file i.e *"go run oauth2.go"*
-3.  server is up and running on port 9096 ; can verify the API's >/credentials , >/token and >/authenticate
+3.  server is up and running on port 9096 ; can verify the API's /credentials , /token and /authenticate
 4.  Run the client program under package client  i.e *"go run client.go"*
 5.  Verify the results now
 
 ***Run the below command which inturns generate client ID and Secret , issues and validates the token***
 > curl --location --request POST 'http://localhost:9090/'
 
-[output:]
-
-{
-    "Status": "Success"
-}
+output:
+    {
+        "Status": "Success"
+    }
 
 
 **JWT**
@@ -42,10 +41,10 @@ This tutorial illustrates the following
     "password": "test"
 }'
 
-[output] :
-{
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImUyMzEyMTBmLWQyNWItNGYzYy05YzZhLWM0NzU4NDhhN2Q5MiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYxMTg4NzQ3OCwidXNlcl9pZCI6MzAyfQ.Z98RKXr1bl0UwXGtmFufirimQtXDTMf0TCWRIcyy4Xk"
-}
+output:
+    {
+        "access_token":     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NfdXVpZCI6ImUyMzEyMTBmLWQyNWItNGYzYy05YzZhLWM0NzU4NDhhN2Q5MiIsImF1dGhvcml6ZWQiOnRydWUsImV4cCI6MTYxMTg4NzQ3OCwidXNlcl9pZCI6MzAyfQ.Z98RKXr1bl0UwXGtmFufirimQtXDTMf0TCWRIcyy4Xk"
+    }
 
 `Note : the expiry of this token is 5 Min , afterwards will be automatically flushed from cache`
 
@@ -58,9 +57,9 @@ This tutorial illustrates the following
     "title":"student"
 }'
 
-[output:]
-{
-    "user_id": 302,
-    "title": "student",
-    "status": "success"
-}
+output:
+    {
+        "user_id": 302,
+        "title": "student",
+        "status": "success"
+    }
